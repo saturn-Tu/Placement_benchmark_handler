@@ -1,7 +1,7 @@
-#include "legalizer.h"
+#include "plan.h"
 
 int main(int argc, char** argv){
-  Legalizer legalizer;
-  legalizer.readAux(argv[1]);
-  legalizer.outputPl();
+  Plan plan;
+  plan.readAux(argv[1]);
+  plan.outputPl();
 }
