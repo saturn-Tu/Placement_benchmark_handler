@@ -10,7 +10,7 @@ void Plan::readAux(string aux_file) {
   int s_index = aux_file.find(".")+1;
   while (fs >> s1) {
     string type = s1.substr(s_index, s1.size()-s_index);
-    if (type == "nodes_"){
+    if (type == "node"){
       this->readNode(s1); 
     } else if (type == "pl"){
       this->readPl(s1);
