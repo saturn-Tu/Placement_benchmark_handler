@@ -42,7 +42,8 @@ void Legalizer::readNode(string node_file) {
     ss.clear();
     ss << s1;
     int start_i = 0;
-    int end_i=0, para_count, w, h, type;
+    int end_i=0, para_count, w, h;
+    NodeType type;
     string name, message, last1, last2;
     for(para_count=0; ss.rdbuf()->in_avail(); para_count++) {
       ss >> message;
@@ -55,7 +56,7 @@ void Legalizer::readNode(string node_file) {
       else if (para_count == 2)
         h = stoi(message);
       else if (para_count == 3) 
-        type = (message == "terminal") ? 1 : 2;
+        type = (message == "terminal") ? NodeType::kBlock : NodeType::kCore;
       start_i = end_i+1;   
     }
     // for avoid streamstring last error
@@ -94,7 +95,7 @@ void Legalizer::readPl(string pl_file) {
 
 void Legalizer::printNodes() {
   for (auto& n : nodes_)
-    n.printNode();
+    cout << n;
   cout << this->node_num_ << "   " << nodes_.size() << endl;
 }
 
@@ -106,12 +107,10 @@ void Legalizer::outputPl() {
   fs << "# Anything following “#” is a comment, and should be ignored\n\n";
   for (auto& node : nodes_) {
     fs << node.name_ << " " << node.x_ << " " << node.y_ << " : ";
-    if (node.type_ == 0) {
+    if (node.type_ == NodeType::kCore) {
       fs << "N\n";
-    } else if (node.type_ == 1) {
+    } else if (node.type_ == NodeType::kBlock) {
       fs << "N /FIXED\n";
-    } else if (node.type_ == 2) {
-      fs << "N /FIXED_NI\n";
     }
   }
   fs.close();

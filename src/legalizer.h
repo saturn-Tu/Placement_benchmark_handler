@@ -7,9 +7,10 @@
 #include <sstream>
 #include <map>
 #include <algorithm>
+#include <cstdlib>
 #include "util.h"
 
-class Legalizer{
+class Legalizer {
 public:
   int node_num_, terminal_num_, line_num_;
   std::vector<Node> nodes_;

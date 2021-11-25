@@ -1,10 +1,13 @@
 #include "util.h"
 using namespace std;
 
-void Node::printNode() {
-  cout << name_ << " " << w_ << " " << h_ << " (" << x_ << "," << y_ <<") " << type_ << endl;
+std::ostream& operator<< (std::ostream& os, const NodeType& obj) {
+  os << static_cast<std::underlying_type<NodeType>::type>(obj);
+  return os;
 }
 
-bool Node::operator < (const Node& n2) {
-  return this->x_ < n2.x_;
+ostream& operator<<(ostream& os, const Node& n)
+{
+  os << n.name_ << " " << n.w_ << " " << n.h_ << " (" << n.x_ << "," << n.y_ <<") " << n.type_ << endl;
+  return os;
 }
