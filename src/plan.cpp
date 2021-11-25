@@ -1,7 +1,7 @@
-#include "legalizer.h" 
+#include "Plan.h" 
 using namespace std;
 
-void Legalizer::readAux(string aux_file) {
+void Plan::readAux(string aux_file) {
   fstream fs;
   fs.open(aux_file, std::fstream::in);
   string s1, s2;
@@ -19,7 +19,7 @@ void Legalizer::readAux(string aux_file) {
   fs.close();
 }
 
-void Legalizer::readNode(string node_file) {
+void Plan::readNode(string node_file) {
   fstream fs;
   fs.open(node_file, std::fstream::in);
   string s1, s2, s3;
@@ -72,7 +72,7 @@ void Legalizer::readNode(string node_file) {
   fs.close();
 }
 
-void Legalizer::readPl(string pl_file) {
+void Plan::readPl(string pl_file) {
   fstream fs;
   fs.open(pl_file, std::fstream::in);
   string s1, name, s_x, s_y;
@@ -93,13 +93,13 @@ void Legalizer::readPl(string pl_file) {
   }
 }
 
-void Legalizer::printNodes() {
+void Plan::printNodes() {
   for (auto& n : nodes_)
     cout << n;
   cout << this->node_num_ << "   " << nodes_.size() << endl;
 }
 
-void Legalizer::outputPl() {
+void Plan::outputPl() {
   fstream fs;
   fs.open("output.pl", std::fstream::out);
   fs << "UCLA pl 1.0\n";

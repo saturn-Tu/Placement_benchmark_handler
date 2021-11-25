@@ -10,9 +10,9 @@
 #include <cstdlib>
 #include "util.h"
 
-class Legalizer {
+class Plan {
 public:
-  int node_num_, terminal_num_, line_num_;
+  int node_num_, terminal_num_;
   std::vector<Node> nodes_;
   std::map<std::string, int> node_idx_;
 //------------function----------------------
