@@ -1,27 +1,15 @@
 #include "util.h"
 using namespace std;
 
-void Node::PrintNode() {
-  cout << name <<" "<< w <<" "<< h <<" ("<< x <<","<< y <<") "<< "L: ("<< legal_x <<","<< legal_y <<") "<< type << endl;
+void Node::printNode() {
+  cout << name_ << " " << w_ << " " << h_ << " (" << x_ << "," << y_ <<") " << 
+    "L: (" << legal_x_ << "," << legal_y_ << ") " << type_ << endl;
 }
 
-int Node::NodeAbs() {
-  return abs(legal_x-x) + abs(legal_y-y);
+int Node::nodeAbs() {
+  return abs(legal_x_-x_) + abs(legal_y_-y_);
 }
 
 bool Node::operator < (const Node& n2) {
-  return this->x < n2.x;
-}
-
-Cluster::Cluster() {
-  this->q = 0;
-  this->weight = 0;
-  this->width = 0;
-}
-
-void Cluster::AddCell(Node& node, int n_index) {
-  this->nodes_index.push_back(n_index);
-  this->weight++;
-  this->q += this->weight * (node.x - this->width);
-  this->width += node.w;
+  return this->x_ < n2.x_;
 }

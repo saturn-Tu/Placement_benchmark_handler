@@ -11,16 +11,16 @@
 
 class Legalizer{
 public:
-  int node_num, terminal_num, line_num;
-  std::vector<Node> nodes;
-  std::map<std::string, int> node_idx;
+  int node_num_, terminal_num_, line_num_;
+  std::vector<Node> nodes_;
+  std::map<std::string, int> node_idx_;
 //------------function----------------------
-  void ReadAux(std::string aux_file);
-  void ReadPl(std::string pl_file);
-  void ReadNode(std::string node_file);
-  void PrintNodes();
-  void PrintLines();
-  void OutputPl();
+  void readAux(std::string aux_file);
+  void readPl(std::string pl_file);
+  void readNode(std::string node_file);
+  void printNodes();
+  void printLines();
+  void outputPl();
 };
 
 #endif
