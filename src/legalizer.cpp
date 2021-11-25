@@ -105,7 +105,7 @@ void Legalizer::outputPl() {
   fs << "# File header with version information, etc.\n";
   fs << "# Anything following “#” is a comment, and should be ignored\n\n";
   for (auto& node : nodes_) {
-    fs << node.name_ << " " << node.legal_x_ << " " << node.legal_y_ << " : ";
+    fs << node.name_ << " " << node.x_ << " " << node.y_ << " : ";
     if (node.type_ == 0) {
       fs << "N\n";
     } else if (node.type_ == 1) {
