@@ -1,4 +1,4 @@
-#include "Plan.h" 
+#include "plan.h" 
 using namespace std;
 
 void Plan::readAux(string aux_file) {
@@ -39,15 +39,13 @@ void Plan::readNode(string node_file) {
   cout << this->node_num_ << " " << this->terminal_num_ << endl;
   getline(fs, s1);
   for (; nodes_.size()<this->node_num_;) {
-    getline(fs, s1); 
-    stringstream ss; 
-    ss.str("");
-    ss.clear();
+    getline(fs, s1);
+    stringstream ss;
     ss << s1;
-    int start_i = 0;
-    int end_i=0, para_count, w, h;
+    int w, h;
     NodeType type;
     string name, message, last1, last2;
+
     for(para_count=0; ss.rdbuf()->in_avail(); para_count++) {
       ss >> message;
       last1 = last2;

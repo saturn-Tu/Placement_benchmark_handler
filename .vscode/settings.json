@@ -68,8 +68,5 @@
         "streambuf": "cpp",
         "typeinfo": "cpp",
         "valarray": "cpp"
-    },
-    "editor.insertSpaces": true,
-    "editor.tabSize": 2,
-    "editor.detectIndentation": true
+    }
 }
