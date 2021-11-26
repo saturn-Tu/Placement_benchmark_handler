@@ -1,9 +1,9 @@
-CXX		=	g++ -std=c++11 -O3
+CXX		=	g++ -std=c++11
 EXE		=  pa
 OBJ_DIR	=	objs
 SRC_DIR = srcs
 
-CFLAGS = -g -O3
+CFLAGS = -g
 
 all: $(EXE)
 
