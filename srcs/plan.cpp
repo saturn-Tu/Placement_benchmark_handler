@@ -19,7 +19,7 @@ void Plan::readAux(string aux_file) {
     }
   }
   this->readNode(node_filename); 
-  //this->readPl(pl_filename);
+  this->readPl(pl_filename);
   fs.close();
 }
 
@@ -63,7 +63,6 @@ void Plan::readNode(string node_file) {
       para_count++;
     }
     // recode node name mapping to index
-    cout << node;
     this->node_idx_[node.name_] = n;
   }
   fs.close();
@@ -72,16 +71,15 @@ void Plan::readNode(string node_file) {
 void Plan::readPl(string pl_file) {
   fstream fs;
   fs.open(pl_file, std::fstream::in);
+  assert(fs);
   string s1, name, s_x, s_y;
   // get garbage message 
-  for (int n=0; n<4; n++)
+  for (int n=0; n<2; n++)
     getline(fs, s1);
   // get useful data
   for (int n=0; n<this->node_num_; n++) {
     getline(fs, s1); 
-    stringstream ss; 
-    ss.str("");
-    ss.clear();
+    stringstream ss;
     ss << s1;
     ss >> name >> s_x >> s_y;
     int& idx = node_idx_[name];
