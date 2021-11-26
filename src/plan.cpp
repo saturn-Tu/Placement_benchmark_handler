@@ -4,18 +4,20 @@ using namespace std;
 void Plan::readAux(string aux_file) {
   fstream fs;
   fs.open(aux_file, std::fstream::in);
-  string s1, s2;
+  string s1, s2, node_filename, pl_filename;
   // parse garbage
   fs >> s1 >> s2;
   int s_index = aux_file.find(".")+1;
   while (fs >> s1) {
     string type = s1.substr(s_index, s1.size()-s_index);
     if (type == "node"){
-      this->readNode(s1); 
+      node_filename = s1;
     } else if (type == "pl"){
-      this->readPl(s1);
+      pl_filename = s1;
     }
   }
+  this->readNode(s1); 
+  //this->readPl(s1);
   fs.close();
 }
 
@@ -24,7 +26,7 @@ void Plan::readNode(string node_file) {
   fs.open(node_file, std::fstream::in);
   string s1, s2, s3;
   // get garbage message 
-  for (int n=0; n<3; n++)
+  for (int n=0; n<4; n++)
     getline(fs, s1);
   // get useful data
   for (int n=0; n<2; n++) {
@@ -34,7 +36,8 @@ void Plan::readNode(string node_file) {
     else if (s1 == "NumTerminals")
       this->terminal_num_ = stoi(s3);
   }
-  cout << this->node_num_ << " " << this->terminal_num_ << endl; 
+  cout << this->node_num_ << " " << this->terminal_num_ << endl;
+  getline(fs, s1);
   for (; nodes_.size()<this->node_num_;) {
     getline(fs, s1); 
     stringstream ss; 
@@ -57,7 +60,6 @@ void Plan::readNode(string node_file) {
         h = stoi(message);
       else if (para_count == 3) 
         type = (message == "terminal") ? NodeType::kBlock : NodeType::kCore;
-      start_i = end_i+1;   
     }
     // for avoid streamstring last error
     if (para_count >= 4 && last2 == last1)
