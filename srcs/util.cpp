@@ -11,3 +11,7 @@ ostream& operator<<(ostream& os, const Node& n)
   os << n.name_ << " " << n.w_ << " " << n.h_ << " (" << n.x_ << "," << n.y_ <<") " << n.type_ << endl;
   return os;
 }
+
+Node::Node () {
+  type_ = NodeType::kCore;
+}

@@ -31,43 +31,35 @@ void Plan::readNode(string node_file) {
   // get useful data
   for (int n=0; n<2; n++) {
     fs >> s1 >> s2 >> s3;
-    if (s1 == "NumNodes")
-      this->node_num_ = stoi(s3);
+    if (s1 == "NumNodes") {
+      node_num_ = stoi(s3);
+      nodes_.resize(node_num_);
+    }
     else if (s1 == "NumTerminals")
-      this->terminal_num_ = stoi(s3);
+      terminal_num_ = stoi(s3);
   }
-  cout << this->node_num_ << " " << this->terminal_num_ << endl;
+  cout << node_num_ << " " << terminal_num_ << endl;
   getline(fs, s1);
-  for (; nodes_.size()<this->node_num_;) {
+  for(int n=0; n<node_num_; n++) {
+    auto& node = nodes_[n];
     getline(fs, s1);
     stringstream ss;
     ss << s1;
-    int w, h;
-    NodeType type;
-    string name, message, last1, last2;
-
-    for(para_count=0; ss.rdbuf()->in_avail(); para_count++) {
-      ss >> message;
-      last1 = last2;
-      last2 = message;
+    while(ss >> message) {
       if (para_count == 0)
-        name = message;
+        node.name_ = message;
       else if (para_count == 1)
-        w = stoi(message);
+        node.w_ = stoi(message);
       else if (para_count == 2)
-        h = stoi(message);
+        node.h_ = stoi(message);
       else if (para_count == 3) 
-        type = (message == "terminal") ? NodeType::kBlock : NodeType::kCore;
+        node.type_ = (message == "terminal") ? NodeType::kBlock : NodeType::kCore;
+      para_count++;
     }
-    // for avoid streamstring last error
-    if (para_count >= 4 && last2 == last1)
-      para_count--;
-    this->node_idx_[name] = nodes_.size();
-    if (para_count == 3) {
-      this->nodes_.emplace_back(name, w , h, 0);
-    } else if (para_count == 4) {
-      this->nodes_.emplace_back(name, w , h, type);
-    }
+    // recode node name mapping to index
+    this->node_idx_[name] = n;
+    cout << node;
+    int a; cin >> a;
   }
   fs.close();
 }

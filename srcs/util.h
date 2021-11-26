@@ -16,6 +16,7 @@ public:
   int x_, y_;
   NodeType type_;
 //-------function-----------------
+  Node();
   Node(std::string n, int w, int h, NodeType t): name_(n), w_(w), h_(h), type_(t){}
   friend ostream& operator<<(ostream& os, const Node& n);
 };

@@ -1,21 +1,22 @@
 CXX		=	g++ -std=c++11 -O3
-EXE		=  Lab4 
+EXE		=  pa
 OBJ_DIR	=	objs
+SRC_DIR = srcs
 
 CFLAGS = -g -O3
 
 all: $(EXE)
 
-$(EXE): $(OBJ_DIR)/main.o $(OBJ_DIR)/legalizer.o $(OBJ_DIR)/util.o
+$(EXE): $(OBJ_DIR)/main.o $(OBJ_DIR)/plan.o $(OBJ_DIR)/util.o
 	$(CXX) $^ $(CFLAGS) -o $@
 	
-$(OBJ_DIR)/main.o: main.cpp legalizer.h | obj_dir
+$(OBJ_DIR)/main.o: $(SRC_DIR)/main.cpp $(SRC_DIR)/plan.h | obj_dir
 	$(CXX) $(CFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/util.o: util.cpp util.h | obj_dir
+$(OBJ_DIR)/util.o: $(SRC_DIR)/util.cpp $(SRC_DIR)/util.h | obj_dir
 	$(CXX) $(CFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/legalizer.o: legalizer.cpp legalizer.h | obj_dir
+$(OBJ_DIR)/plan.o: $(SRC_DIR)/plan.cpp $(SRC_DIR)/plan.h | obj_dir
 	$(CXX) $(CFLAGS) -c $< -o $@
 
 
