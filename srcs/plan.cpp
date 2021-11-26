@@ -31,7 +31,6 @@ void Plan::readNode(string node_file) {
   // get garbage message 
   for (int n=0; n<4; n++) {
     getline(fs, s1);
-    cout << "line: " << s1 << endl;
   }
   // get useful data
   for (int n=0; n<2; n++) {
@@ -44,6 +43,7 @@ void Plan::readNode(string node_file) {
       terminal_num_ = stoi(s3);
   }
   cout << node_num_ << " " << terminal_num_ << endl;
+  getline(fs, s1);
   getline(fs, s1);
   for(int n=0; n<node_num_; n++) {
     auto& node = nodes_[n];
