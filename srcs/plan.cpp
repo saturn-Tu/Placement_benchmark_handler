@@ -4,30 +4,35 @@ using namespace std;
 void Plan::readAux(string aux_file) {
   fstream fs;
   fs.open(aux_file, std::fstream::in);
-  string s1, s2, node_filename, pl_filename;
+  string s1, s2, prefix_filename, node_filename, pl_filename;
+  prefix_filename = aux_file.substr(0, aux_file.find("."));
   // parse garbage
   fs >> s1 >> s2;
-  int s_index = aux_file.find(".")+1;
   while (fs >> s1) {
-    string type = s1.substr(s_index, s1.size()-s_index);
-    if (type == "node"){
-      node_filename = s1;
+    int dot_pos = s1.find(".");
+    string type = s1.substr(dot_pos+1, s1.size()-dot_pos);
+    cout << type << endl;
+    if (type == "nodes"){
+      node_filename = prefix_filename+".nodes";
     } else if (type == "pl"){
-      pl_filename = s1;
+      pl_filename = prefix_filename+".pl";
     }
   }
-  this->readNode(s1); 
-  //this->readPl(s1);
+  this->readNode(node_filename); 
+  //this->readPl(pl_filename);
   fs.close();
 }
 
 void Plan::readNode(string node_file) {
   fstream fs;
   fs.open(node_file, std::fstream::in);
+  assert(fs);
   string s1, s2, s3;
   // get garbage message 
-  for (int n=0; n<4; n++)
+  for (int n=0; n<4; n++) {
     getline(fs, s1);
+    cout << "line: " << s1 << endl;
+  }
   // get useful data
   for (int n=0; n<2; n++) {
     fs >> s1 >> s2 >> s3;
@@ -45,21 +50,21 @@ void Plan::readNode(string node_file) {
     getline(fs, s1);
     stringstream ss;
     ss << s1;
-    while(ss >> message) {
+    int para_count = 0;
+    while(ss >> s2) {
       if (para_count == 0)
-        node.name_ = message;
+        node.name_ = s2;
       else if (para_count == 1)
-        node.w_ = stoi(message);
+        node.w_ = stoi(s2);
       else if (para_count == 2)
-        node.h_ = stoi(message);
+        node.h_ = stoi(s2);
       else if (para_count == 3) 
-        node.type_ = (message == "terminal") ? NodeType::kBlock : NodeType::kCore;
+        node.type_ = (s2 == "terminal") ? NodeType::kBlock : NodeType::kCore;
       para_count++;
     }
     // recode node name mapping to index
-    this->node_idx_[name] = n;
     cout << node;
-    int a; cin >> a;
+    this->node_idx_[node.name_] = n;
   }
   fs.close();
 }
