@@ -4,7 +4,8 @@ using namespace std;
 void Plan::readAux(string aux_file) {
   fstream fs;
   fs.open(aux_file, std::fstream::in);
-  string s1, s2, prefix_filename, node_filename, pl_filename;
+  string s1, s2, prefix_filename;
+  bool node_flg = 0, pl_flg = 0, partition_flg = 0;
   prefix_filename = aux_file.substr(0, aux_file.find("."));
   // parse garbage
   fs >> s1 >> s2;
@@ -13,14 +14,20 @@ void Plan::readAux(string aux_file) {
     string type = s1.substr(dot_pos+1, s1.size()-dot_pos);
     cout << type << endl;
     if (type == "nodes"){
-      node_filename = prefix_filename+".nodes";
+      node_flg = true;
     } else if (type == "pl"){
-      pl_filename = prefix_filename+".pl";
+      pl_flg = true;
+    } else if (type == "partition") {
+      partition_flg = true;
     }
   }
-  this->readNode(node_filename); 
-  this->readPl(pl_filename);
   fs.close();
+  if(node_flg)
+    this->readNode(prefix_filename+".nodes");
+  if(pl_flg)
+    this->readPl(prefix_filename+".pl");
+  if(partition_flg)
+    this->readPartition(prefix_filename+".partition");
 }
 
 void Plan::readNode(string node_file) {
@@ -85,6 +92,24 @@ void Plan::readPl(string pl_file) {
     int& idx = node_idx_[name];
     nodes_[idx].x_ = stoi(s_x);
     nodes_[idx].y_ = stoi(s_y);
+  }
+}
+
+void Plan::readPartition(string partiton_file) {
+  fstream fs;
+  fs.open(partiton_file, std::fstream::in);
+  assert(fs);
+  string s1, s2;
+  fs >> s1;
+  partition_num_ = stoi(s1);
+  partitions_.resize(partition_num_);
+  for(int n=0; n<partition_num_; n++) {
+    getline(fs, s1); 
+    stringstream ss;
+    ss << s1;
+    while(ss >> s1 >> s2) {
+      partitions_[n] << ClipperLib::IntPoint(stoi(s1), stoi(s2));
+    }
   }
 }
 
