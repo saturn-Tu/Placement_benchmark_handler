@@ -95,14 +95,16 @@ void Plan::readPl(string pl_file) {
   }
 }
 
-void Plan::readPartition(string partiton_file) {
+void Plan::readPartition(string partition_file) {
   fstream fs;
-  fs.open(partiton_file, std::fstream::in);
+  fs.open(partition_file, std::fstream::in);
   assert(fs);
   string s1, s2;
   fs >> s1;
   partition_num_ = stoi(s1);
   partitions_.resize(partition_num_);
+  // parse garbage
+  getline(fs, s1);
   for(int n=0; n<partition_num_; n++) {
     getline(fs, s1); 
     stringstream ss;
