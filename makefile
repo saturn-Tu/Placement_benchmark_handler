@@ -21,7 +21,7 @@ $(OBJ_DIR)/plan.o: $(SRC_DIR)/plan.cpp $(SRC_DIR)/plan.h | obj_dir
 	$(CXX) $(CFLAGS) -c $< -o $@
 
 $(OBJ_DIR)/clipper.o: $(CLIPPER_DIR)/clipper.cpp | obj_dir
-	$(CCC) $(CCFLAGS) -c $< -o $@
+	$(CXX) $(CCFLAGS) -c $< -o $@
 
 obj_dir:
 	mkdir -p $(OBJ_DIR)
