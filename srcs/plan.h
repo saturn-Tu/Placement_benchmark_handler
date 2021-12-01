@@ -25,7 +25,7 @@ public:
   void printNodes();
   void printLines();
   void outputPl();
-  void outputGDT();
+  void outputGDT(std::string gdt_file);
 };
 
 #endif

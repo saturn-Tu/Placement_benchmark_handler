@@ -137,3 +137,33 @@ void Plan::outputPl() {
   }
   fs.close();
 }
+
+void Plan::outputGDT(string gdt_file) {
+  cout << "start output GDT file: " << gdt_file << endl;
+  fstream fs;
+  fs.open(gdt_file, std::fstream::out);
+  fs << "gds2{600\n";
+  fs << "m=201809-14 14:26:15 a=201809-14 14:26:15\n";
+  fs << "lib \'asap7sc7p5t_24_SL\' 0.00025 2.5e-10\n";
+  fs << "cell{c=201809-14 14:26:15 m=201809-14 14:26:15 \'AND2x2_ASAP7_75t_SL\'\n";
+  for(auto& node:nodes_) {
+    int layer;
+    if(node.type_ == NodeType::kBlock) {
+      layer = 2;
+    } else if(node.type_ == NodeType::kCore) {
+      layer = 1;
+    }
+    fs << "b{" << layer << " xy(" << node.x_ << " " << node.y_ << " " << node.x_+node.w_ << " " << node.y_ << 
+      " " << node.x_+node.w_ << " " << node.y_+node.h_  << " " << node.x_ << " " << node.y_+node.h_ << ")}\n";
+  }
+  for(auto& shape:partitions_) {
+    int layer = 3;
+    fs << "b{" << layer << " xy(";
+    for(auto& p:shape) {
+      fs << p.X << " " << p.Y << " ";
+    }
+    fs << ")}\n";
+  }
+  fs << "}\n}";
+  fs.close();
+}
