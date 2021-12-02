@@ -26,8 +26,10 @@ void Plan::readAux(string aux_file) {
     this->readNode(prefix_filename+".nodes");
   if(pl_flg)
     this->readPl(prefix_filename+".pl");
-  if(partition_flg)
+  if(partition_flg) {
     this->readPartition(prefix_filename+".partition");
+    this->checkPartitionsRectilinear();
+  }
 }
 
 void Plan::readNode(string node_file) {
@@ -166,4 +168,24 @@ void Plan::outputGDT(string gdt_file) {
   }
   fs << "}\n}";
   fs.close();
+}
+
+void Plan::checkPartitionsRectilinear() {
+  for(auto& pa:partitions_) {
+    bool xy_type;
+    if(pa[0].X == pa.back().X)
+      xy_type = 0;
+    else if(pa[0].Y == pa.back().Y)
+      xy_type = 1;
+    else 
+      assert(false);
+    for(int n=1; n<pa.size(); n++) {
+      if(xy_type && pa[n].X == pa[n-1].X)
+        xy_type = !xy_type;
+      else if(!xy_type && pa[n].Y == pa[n-1].Y)
+        xy_type = !xy_type;
+      else 
+        assert(false);
+    }
+  }
 }

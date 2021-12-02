@@ -26,6 +26,7 @@ public:
   void printLines();
   void outputPl();
   void outputGDT(std::string gdt_file);
+  void checkPartitionsRectilinear();
 };
 
 #endif
