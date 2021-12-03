@@ -55,7 +55,7 @@ void Plan::readNode(string node_file) {
   getline(fs, s1);
   getline(fs, s1);
   for(int n=0; n<node_num_; n++) {
-    auto& node = nodes_[n];
+    Node& node = nodes_[n];
     getline(fs, s1);
     stringstream ss;
     ss << s1;
@@ -118,7 +118,7 @@ void Plan::readPartition(string partition_file) {
 }
 
 void Plan::printNodes() {
-  for (auto& n : nodes_)
+  for (Node& n : nodes_)
     cout << n;
   cout << this->node_num_ << "   " << nodes_.size() << endl;
 }
@@ -129,7 +129,7 @@ void Plan::outputPl() {
   fs << "UCLA pl 1.0\n";
   fs << "# File header with version information, etc.\n";
   fs << "# Anything following “#” is a comment, and should be ignored\n\n";
-  for (auto& node : nodes_) {
+  for (Node& node : nodes_) {
     fs << node.name_ << " " << node.x_ << " " << node.y_ << " : ";
     if (node.type_ == NodeType::kCore) {
       fs << "N\n";
@@ -148,7 +148,7 @@ void Plan::outputGDT(string gdt_file) {
   fs << "m=201809-14 14:26:15 a=201809-14 14:26:15\n";
   fs << "lib \'asap7sc7p5t_24_SL\' 0.00025 2.5e-10\n";
   fs << "cell{c=201809-14 14:26:15 m=201809-14 14:26:15 \'AND2x2_ASAP7_75t_SL\'\n";
-  for(auto& node:nodes_) {
+  for(Node& node:nodes_) {
     int layer;
     if(node.type_ == NodeType::kBlock) {
       layer = 2;
@@ -158,10 +158,10 @@ void Plan::outputGDT(string gdt_file) {
     fs << "b{" << layer << " xy(" << node.x_ << " " << node.y_ << " " << node.x_+node.w_ << " " << node.y_ << 
       " " << node.x_+node.w_ << " " << node.y_+node.h_  << " " << node.x_ << " " << node.y_+node.h_ << ")}\n";
   }
-  for(auto& shape:partitions_) {
+  for(Partition& shape:partitions_) {
     int layer = 3;
     fs << "b{" << layer << " xy(";
-    for(auto& p:shape.contour_) {
+    for(ClipperLib::IntPoint& p:shape.contour_) {
       fs << p.X << " " << p.Y << " ";
     }
     fs << ")}\n";
@@ -192,13 +192,15 @@ void Plan::checkPartitionsRectilinear() {
 }
 
 void Plan::mapCellInPartition() {
-  for(auto& node:nodes_) {
+  for(int n=0; n<nodes_.size(); n++) {
+    Node& node = nodes_[n];
     for(int p=0; p<partitions_.size(); p++) {
       auto& partition = partitions_[p];
       ClipperLib::IntPoint mid_p(node.x_+node.w_/2, node.y_+node.h_/2);
-      if(ClipperLib::PointInPolygon(mid_p, partition)) {
+      if(ClipperLib::PointInPolygon(mid_p, partition.contour_)) {
         node.partition_idx_ = p;
         partition.cell_num_++;
+        partition.inter_cells_.insert(n);
       }
     }
   }
