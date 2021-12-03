@@ -7,7 +7,7 @@ ostream& operator<< (ostream& os, const NodeType& obj) {
 }
 
 ostream& operator<< (ostream& os, const Node& n) {
-  os << n.name_ << " " << n.w_ << " " << n.h_ << " (" << n.x_ << "," << n.y_ << ") " << n.type_ << endl;
+  os << n.name_ << " " << n.w_ << " " << n.h_ << " (" << n.x_ << "," << n.y_ << ") " << n.type_ << " pa: " << n.partition_idx_ << endl;
   return os;
 }
 

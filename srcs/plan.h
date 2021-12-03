@@ -9,14 +9,14 @@
 #include <algorithm>
 #include <cstdlib>
 #include "util.h"
-#include "../clipper/clipper.hpp"
 
 class Plan {
 public:
   int node_num_, terminal_num_, partition_num_;
   std::vector<Node> nodes_;
   std::map<std::string, int> node_idx_;
-  std::vector<ClipperLib::Path> partitions_;
+  std::vector<Partition> partitions_;
+  std::vector<Net> nets_;
 //------------function----------------------
   void readAux(std::string aux_file);
   void readPl(std::string pl_file);
@@ -27,6 +27,7 @@ public:
   void outputPl();
   void outputGDT(std::string gdt_file);
   void checkPartitionsRectilinear();
+  void mapCellInPartition();
 };
 
 #endif

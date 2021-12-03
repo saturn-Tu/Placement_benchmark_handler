@@ -112,7 +112,7 @@ void Plan::readPartition(string partition_file) {
     stringstream ss;
     ss << s1;
     while(ss >> s1 >> s2) {
-      partitions_[n] << ClipperLib::IntPoint(stoi(s1), stoi(s2));
+      partitions_[n].contour_ << ClipperLib::IntPoint(stoi(s1), stoi(s2));
     }
   }
 }
@@ -161,7 +161,7 @@ void Plan::outputGDT(string gdt_file) {
   for(auto& shape:partitions_) {
     int layer = 3;
     fs << "b{" << layer << " xy(";
-    for(auto& p:shape) {
+    for(auto& p:shape.contour_) {
       fs << p.X << " " << p.Y << " ";
     }
     fs << ")}\n";
@@ -171,21 +171,35 @@ void Plan::outputGDT(string gdt_file) {
 }
 
 void Plan::checkPartitionsRectilinear() {
-  for(auto& pa:partitions_) {
+  for(Partition& pa:partitions_) {
+    ClipperLib::Path& contour = pa.contour_;
     bool xy_type;
-    if(pa[0].X == pa.back().X)
+    if(contour[0].X == contour.back().X)
       xy_type = 0;
-    else if(pa[0].Y == pa.back().Y)
+    else if(contour[0].Y == contour.back().Y)
       xy_type = 1;
     else 
       assert(false);
-    for(int n=1; n<pa.size(); n++) {
-      if(xy_type && pa[n].X == pa[n-1].X)
+    for(int n=1; n<contour.size(); n++) {
+      if(xy_type && contour[n].X == contour[n-1].X)
         xy_type = !xy_type;
-      else if(!xy_type && pa[n].Y == pa[n-1].Y)
+      else if(!xy_type && contour[n].Y == contour[n-1].Y)
         xy_type = !xy_type;
-      else 
+      else
         assert(false);
+    }
+  }
+}
+
+void Plan::mapCellInPartition() {
+  for(auto& node:nodes_) {
+    for(int p=0; p<partitions_.size(); p++) {
+      auto& partition = partitions_[p];
+      ClipperLib::IntPoint mid_p(node.x_+node.w_/2, node.y_+node.h_/2);
+      if(ClipperLib::PointInPolygon(mid_p, partition)) {
+        node.partition_idx_ = p;
+        partition.cell_num_++;
+      }
     }
   }
 }
