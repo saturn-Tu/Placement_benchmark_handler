@@ -2,23 +2,25 @@
 using namespace std;
 
 void Plan::readAux(string aux_file) {
+  cout << "# Reading .aux file\n";
   fstream fs;
   fs.open(aux_file, std::fstream::in);
   string s1, s2, prefix_filename;
-  bool node_flg = 0, pl_flg = 0, partition_flg = 0;
+  bool node_flg = 0, pl_flg = 0, partition_flg = 0, net_flg = 0;
   prefix_filename = aux_file.substr(0, aux_file.find("."));
   // parse garbage
   fs >> s1 >> s2;
   while (fs >> s1) {
     int dot_pos = s1.find(".");
     string type = s1.substr(dot_pos+1, s1.size()-dot_pos);
-    cout << type << endl;
     if (type == "nodes"){
       node_flg = true;
     } else if (type == "pl"){
       pl_flg = true;
     } else if (type == "partition") {
       partition_flg = true;
+    } else if (type == "nets") {
+      net_flg = true;
     }
   }
   fs.close();
@@ -30,9 +32,13 @@ void Plan::readAux(string aux_file) {
     this->readPartition(prefix_filename+".partition");
     this->checkPartitionsRectilinear();
   }
+  if(net_flg) {
+    this->readNet(prefix_filename+".nets");
+  }
 }
 
 void Plan::readNode(string node_file) {
+  cout << "# Reading .node file\n";
   fstream fs;
   fs.open(node_file, std::fstream::in);
   assert(fs);
@@ -78,6 +84,7 @@ void Plan::readNode(string node_file) {
 }
 
 void Plan::readPl(string pl_file) {
+  cout << "# Reading .pl file\n";
   fstream fs;
   fs.open(pl_file, std::fstream::in);
   assert(fs);
@@ -98,6 +105,7 @@ void Plan::readPl(string pl_file) {
 }
 
 void Plan::readPartition(string partition_file) {
+  cout << "# Reading .partition file\n";
   fstream fs;
   fs.open(partition_file, std::fstream::in);
   assert(fs);
@@ -118,6 +126,7 @@ void Plan::readPartition(string partition_file) {
 }
 
 void Plan::readNet(std::string net_file) {
+  cout << "# Reading .nets file\n";
   fstream fs;
   fs.open(net_file, std::fstream::in);
   assert(fs);
@@ -132,19 +141,25 @@ void Plan::readNet(std::string net_file) {
   pins_num_ = stoi(s3);
   // get garbage message 
   getline(fs, s1);
+  getline(fs, s1);
   nets_.resize(nets_num_);
-  for(Net& net:nets_) {
+  for(int n=0; n<nets_.size(); n++) {
+    Net& net = nets_[n];
     getline(fs, s1);
     stringstream ss;
     ss << s1;
-    ss >> s1 >> s2 >> s3;
-    int pin_num = stoi(s2);
-    net.name_ = s3;
+    ss >> s1 >> s2 >> s3 >> s4;
+    int pin_num = stoi(s3);
+    net.name_ = s4;
     // parse pin information
     for(int p=0; p<pin_num; p++) {
+      getline(fs, s1);
+      stringstream ss;
+      ss << s1;
       ss >> s1 >> s2 >> s3 >> s4 >> s5;
       int cell_idx = stoi(s1.substr(1, s1.size()-1));
       net.terminals_idx_.insert(cell_idx);
+      nodes_[cell_idx].nets_idx_.insert(n);
     }
   }
   fs.close();
@@ -225,15 +240,13 @@ void Plan::checkPartitionsRectilinear() {
 }
 
 void Plan::mapCellInPartition() {
-  for(int n=0; n<nodes_.size(); n++) {
-    Node& node = nodes_[n];
-    for(int p=0; p<partitions_.size(); p++) {
-      auto& partition = partitions_[p];
+  for(Node& node:nodes_) {
+    for(int pa_idx=0; pa_idx<partitions_.size(); pa_idx++) {
+      auto& partition = partitions_[pa_idx];
       ClipperLib::IntPoint mid_p(node.x_+node.w_/2, node.y_+node.h_/2);
       if(ClipperLib::PointInPolygon(mid_p, partition.contour_)) {
-        node.partition_idx_ = p;
+        node.partition_idx_ = pa_idx;
         partition.cell_num_++;
-        partition.inter_cells_.insert(n);
       }
     }
   }

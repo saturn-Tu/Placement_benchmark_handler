@@ -13,7 +13,7 @@ ostream& operator<< (ostream& os, const Node& n) {
 
 ostream& operator<< (ostream& os, const Partition& p) {
   os << p.contour_;
-  os << "cell_num: " << p.cell_num_ << " inter_cell_num: " << p.inter_cells_.size() << endl;
+  os << "cell_num: " << p.cell_num_ << " inter_cell_num: " << p.inter_cells_.size() << " inter_net_num = " << p.inter_nets_idx_.size() << endl;
   return os;
 }
 

@@ -18,7 +18,7 @@ public:
   int w_, h_;
   int x_, y_;
   NodeType type_;
-  int partition_idx_;
+  int partition_idx_ = -1;
   std::set<int> nets_idx_;
 //-------function-----------------
   Node();
