@@ -37,9 +37,10 @@ class Partition {
 public:
   ClipperLib::Path contour_;
   int cell_num_;
-  std::vector<int> cells_idx_;
+  std::set<int> cells_idx_;
   std::set<int> inter_cells_;
   std::set<int> inter_nets_idx_;
+  friend std::ostream& operator<<(std::ostream& os, const Partition& p);
 };
 
 #endif

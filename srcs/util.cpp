@@ -11,6 +11,12 @@ ostream& operator<< (ostream& os, const Node& n) {
   return os;
 }
 
+ostream& operator<< (ostream& os, const Partition& p) {
+  os << p.contour_;
+  os << "cell_num: " << p.cell_num_ << " inter_cell_num: " << p.inter_cells_.size() << endl;
+  return os;
+}
+
 Node::Node () {
   type_ = NodeType::kCore;
 }
