@@ -19,16 +19,18 @@ public:
   std::vector<Net> nets_;
 //------------function----------------------
   void readAux(std::string aux_file);
-  void readPl(std::string pl_file);
-  void readNode(std::string node_file);
-  void readPartition(std::string partiton_file);
-  void readNet(std::string net_file);
   void printNodes();
   void printLines();
   void outputPl();
   void outputGDT(std::string gdt_file);
   void checkPartitionsRectilinear();
   void mapCellInPartition();
+  
+private:
+  void readPl(std::string pl_file);
+  void readNode(std::string node_file);
+  void readPartition(std::string partiton_file);
+  void readNet(std::string net_file);
 };
 
 #endif
