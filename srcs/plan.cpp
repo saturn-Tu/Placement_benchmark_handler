@@ -117,6 +117,39 @@ void Plan::readPartition(string partition_file) {
   }
 }
 
+void Plan::readNet(std::string net_file) {
+  fstream fs;
+  fs.open(net_file, std::fstream::in);
+  assert(fs);
+  string s1, s2, s3, s4, s5;
+  // get garbage message 
+  for(int n=0; n<4; n++) {
+    getline(fs, s1);
+  }
+  fs >> s1 >> s2 >> s3;
+  nets_num_ = stoi(s3);
+  fs >> s1 >> s2 >> s3;
+  pins_num_ = stoi(s3);
+  // get garbage message 
+  getline(fs, s1);
+  nets_.resize(nets_num_);
+  for(Net& net:nets_) {
+    getline(fs, s1);
+    stringstream ss;
+    ss << s1;
+    ss >> s1 >> s2 >> s3;
+    int pin_num = stoi(s2);
+    net.name_ = s3;
+    // parse pin information
+    for(int p=0; p<pin_num; p++) {
+      ss >> s1 >> s2 >> s3 >> s4 >> s5;
+      int cell_idx = stoi(s1.substr(1, s1.size()-1));
+      net.terminals_idx_.insert(cell_idx);
+    }
+  }
+  fs.close();
+}
+
 void Plan::printNodes() {
   for (Node& n : nodes_)
     cout << n;

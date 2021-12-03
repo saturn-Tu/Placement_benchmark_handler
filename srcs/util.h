@@ -28,8 +28,9 @@ public:
 
 class Net {
 public:
+  std::string name_;
   // idx for terminal partition index
-  std::set<int> terminal_idxs_;
+  std::set<int> terminals_idx_;
 };
 
 class Partition {

@@ -12,7 +12,7 @@
 
 class Plan {
 public:
-  int node_num_, terminal_num_, partition_num_;
+  int node_num_, terminal_num_, partition_num_, nets_num_, pins_num_;
   std::vector<Node> nodes_;
   std::map<std::string, int> node_idx_;
   std::vector<Partition> partitions_;
@@ -22,6 +22,7 @@ public:
   void readPl(std::string pl_file);
   void readNode(std::string node_file);
   void readPartition(std::string partiton_file);
+  void readNet(std::string net_file);
   void printNodes();
   void printLines();
   void outputPl();
