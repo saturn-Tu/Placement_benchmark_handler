@@ -25,7 +25,8 @@ public:
   void outputGDT(std::string gdt_file);
   void checkPartitionsRectilinear();
   void mapCellInPartition();
-  
+  void mapNetInPartition();
+
 private:
   void readPl(std::string pl_file);
   void readNode(std::string node_file);

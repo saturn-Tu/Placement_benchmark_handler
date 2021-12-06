@@ -242,11 +242,29 @@ void Plan::checkPartitionsRectilinear() {
 void Plan::mapCellInPartition() {
   for(Node& node:nodes_) {
     for(int pa_idx=0; pa_idx<partitions_.size(); pa_idx++) {
-      auto& partition = partitions_[pa_idx];
+      Partition& partition = partitions_[pa_idx];
       ClipperLib::IntPoint mid_p(node.x_+node.w_/2, node.y_+node.h_/2);
       if(ClipperLib::PointInPolygon(mid_p, partition.contour_)) {
         node.partition_idx_ = pa_idx;
         partition.cell_num_++;
+      }
+    }
+  }
+}
+
+void Plan::mapNetInPartition() {
+  for(int net_idx=0; net_idx<nets_.size(); net_idx++) {
+    Net& net = nets_[net_idx];
+    set<int> partition_set;
+    for(const int& t_idx:net.terminals_idx_) {
+      Node& terminal = nodes_[t_idx];
+      partition_set.insert(terminal.partition_idx_);
+    }
+    // record inter_net
+    if(partition_set.count(-1) == 0) {
+      for(const int& pa_idx:partition_set) {
+        Partition& partition = partitions_[pa_idx];
+        partition.inter_nets_idx_.insert(net_idx);
       }
     }
   }
