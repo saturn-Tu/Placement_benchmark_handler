@@ -12,7 +12,12 @@ partitionName
 
 .net file for NCTUGR:
 "NumNets" : #Nets
+"NetDegree" :   #pinsInNet  netName
+  cellName
+  ...
+...
 
+"NumHighSpeedNets" :  #HighSpeedNets
 "NetDegree" :   #pinsInNet  netName
   cellName
   ...
