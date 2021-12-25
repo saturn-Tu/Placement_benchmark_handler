@@ -1,0 +1,27 @@
+.partition file for NCTUGR:
+#Partition
+partitionName
+  x y x y ... //boundary of partition
+  "NumIntraCell"  #NumIntraCell
+  "NumInterCell"  #NumInterCell
+    cellName
+    ...
+...
+
+-----------------------------------------
+
+.net file for NCTUGR:
+"NumNets" : #Nets
+
+"NetDegree" :   #pinsInNet  netName
+  cellName
+  ...
+...
+
+-----------------------------------------
+
+output file for pin assignment
+
+#interCells
+nodeName lowerLeftX lowerLeftY
+...
