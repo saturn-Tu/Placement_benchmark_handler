@@ -15,6 +15,7 @@ enum class NodeType : char {
 class Node {
 public:
   std::string name_;
+  int id;
   int w_, h_;
   int x_, y_;
   NodeType type_;
@@ -29,6 +30,7 @@ public:
 class Net {
 public:
   std::string name_;
+  int id;
   // idx for terminal partition index
   std::set<int> terminals_idx_;
 };
@@ -36,6 +38,7 @@ public:
 class Partition {
 public:
   ClipperLib::Path contour_;
+  int id;
   int cell_num_;
   std::set<int> cells_idx_;
   std::set<int> inter_cells_;

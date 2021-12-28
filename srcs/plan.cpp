@@ -67,8 +67,10 @@ void Plan::readNode(string node_file) {
     ss << s1;
     int para_count = 0;
     while(ss >> s2) {
-      if (para_count == 0)
+      if (para_count == 0) {
         node.name_ = s2;
+        node.id = stoi(node.name_.substr(1, node.name_.size()-1));
+      }
       else if (para_count == 1)
         node.w_ = stoi(s2);
       else if (para_count == 2)
@@ -116,6 +118,7 @@ void Plan::readPartition(string partition_file) {
   // parse garbage
   getline(fs, s1);
   for(int n=0; n<partition_num_; n++) {
+    partitions_[n].id = n;
     getline(fs, s1); 
     stringstream ss;
     ss << s1;
@@ -151,6 +154,7 @@ void Plan::readNet(std::string net_file) {
     ss >> s1 >> s2 >> s3 >> s4;
     int pin_num = stoi(s3);
     net.name_ = s4;
+    net.id = stoi(net.name_.substr(1, net.name_.size()-1));
     // parse pin information
     for(int p=0; p<pin_num; p++) {
       getline(fs, s1);
@@ -253,6 +257,7 @@ void Plan::mapCellInPartition() {
 }
 
 void Plan::mapNetInPartition() {
+  int net_num = 0;
   for(int net_idx=0; net_idx<nets_.size(); net_idx++) {
     Net& net = nets_[net_idx];
     set<int> partition_set;
@@ -261,11 +266,13 @@ void Plan::mapNetInPartition() {
       partition_set.insert(terminal.partition_idx_);
     }
     // record inter_net
-    if(partition_set.count(-1) == 0) {
+    if(partition_set.count(-1) == 0 && partition_set.size() > 1) {
+      net_num += 1;
       for(const int& pa_idx:partition_set) {
         Partition& partition = partitions_[pa_idx];
         partition.inter_nets_idx_.insert(net_idx);
       }
     }
   }
+  cout << "Net: " << net_num << " / " << nets_num_ << endl;
 }

@@ -7,13 +7,14 @@ ostream& operator<< (ostream& os, const NodeType& obj) {
 }
 
 ostream& operator<< (ostream& os, const Node& n) {
-  os << n.name_ << " " << n.w_ << " " << n.h_ << " (" << n.x_ << "," << n.y_ << ") " << n.type_ << " pa: " << n.partition_idx_ << endl;
+  os << n.name_ << " " << n.id << " " << n.w_ << " " << n.h_ << " (" << n.x_ << "," << n.y_ << ") " << n.type_ << " pa: " << n.partition_idx_ << endl;
   return os;
 }
 
 ostream& operator<< (ostream& os, const Partition& p) {
   os << p.contour_;
-  os << "cell_num: " << p.cell_num_ << " inter_cell_num: " << p.inter_cells_.size() << " inter_net_num = " << p.inter_nets_idx_.size() << endl;
+  os << "cell_num: " << p.cell_num_ << " " << p.id << " inter_cell_num: " << p.inter_cells_.size() << 
+    " inter_net_num = " << p.inter_nets_idx_.size() << endl;
   return os;
 }
 
