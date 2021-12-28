@@ -123,8 +123,13 @@ void Plan::readPartition(string partition_file) {
     stringstream ss;
     ss << s1;
     while(ss >> s1 >> s2) {
-      partitions_[n].contour_ << ClipperLib::IntPoint(stoi(s1), stoi(s2));
+      ClipperLib::IntPoint point(stoi(s1), stoi(s2));
+      partitions_[n].contour_ << ClipperLib::IntPoint(point);
+      partitions_[n].center_p.X += point.X;
+      partitions_[n].center_p.Y += point.Y;
     }
+    partitions_[n].center_p.X /= partitions_[n].contour_.size();
+    partitions_[n].center_p.Y /= partitions_[n].contour_.size();
   }
 }
 

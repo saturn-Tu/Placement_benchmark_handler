@@ -40,6 +40,7 @@ public:
   ClipperLib::Path contour_;
   int id;
   int cell_num_;
+  ClipperLib::IntPoint center_p;
   std::set<int> cells_idx_;
   std::set<int> inter_cells_;
   std::set<int> inter_nets_idx_;
