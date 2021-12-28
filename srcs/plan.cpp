@@ -69,7 +69,7 @@ void Plan::readNode(string node_file) {
     while(ss >> s2) {
       if (para_count == 0) {
         node.name_ = s2;
-        node.id = stoi(node.name_.substr(1, node.name_.size()-1));
+        node.id = n;
       }
       else if (para_count == 1)
         node.w_ = stoi(s2);
@@ -159,7 +159,7 @@ void Plan::readNet(std::string net_file) {
     ss >> s1 >> s2 >> s3 >> s4;
     int pin_num = stoi(s3);
     net.name_ = s4;
-    net.id = stoi(net.name_.substr(1, net.name_.size()-1));
+    net.id = n;
     // parse pin information
     for(int p=0; p<pin_num; p++) {
       getline(fs, s1);
@@ -250,13 +250,29 @@ void Plan::checkPartitionsRectilinear() {
 
 void Plan::mapCellInPartition() {
   for(Node& node:nodes_) {
+    if(node.type_ == NodeType::kBlock)
+      continue;
+    int min_distance = INT32_MAX;
+    ClipperLib::IntPoint mid_p(node.x_+node.w_/2, node.y_+node.h_/2);
     for(int pa_idx=0; pa_idx<partitions_.size(); pa_idx++) {
       Partition& partition = partitions_[pa_idx];
-      ClipperLib::IntPoint mid_p(node.x_+node.w_/2, node.y_+node.h_/2);
       if(ClipperLib::PointInPolygon(mid_p, partition.contour_)) {
         node.partition_idx_ = pa_idx;
-        partition.cell_num_++;
+        break;
+      } else {
+        // find nearest partition by calculating distance to center of partition
+        int distance = abs(mid_p.X-partition.center_p.X) + abs(mid_p.Y-partition.center_p.Y);
+        if(distance < min_distance) {
+          min_distance = distance;
+          node.partition_idx_ = pa_idx;
+        }
       }
+    }
+    // map cell to partition
+    if(node.partition_idx_ != -1) {
+      Partition& partition = partitions_[node.partition_idx_];
+      partition.cell_num_++;
+      partition.cells_idx_.insert(node.id);
     }
   }
 }
