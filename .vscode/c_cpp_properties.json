@@ -3,8 +3,9 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/src",
-                "C:\\MinGW\\lib\\gcc\\mingw32\\6.3.0\\include\\c++\\mingw32"
+                "${workspaceFolder}/srcs",
+                "C:\\MinGW\\lib\\gcc\\mingw32\\6.3.0\\include\\c++\\mingw32",
+                "C:\\Users\\Joinet\\boost\\boost_1_77_0"
             ],
             "defines": [
                 "_DEBUG",

@@ -5,7 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <map>
+#include <unordered_map>
 #include <algorithm>
 #include <cstdlib>
 #include "util.h"
@@ -14,9 +14,10 @@ class Plan {
 public:
   int node_num_, terminal_num_, partition_num_, nets_num_, pins_num_;
   std::vector<Node> nodes_;
-  std::map<std::string, int> node_idx_;
+  std::unordered_map<std::string, int> node_idx_;
   std::vector<Partition> partitions_;
   std::vector<Net> nets_;
+  std::vector<Net> inter_nets_;
 //------------function----------------------
   void readAux(std::string aux_file);
   void printNodes();

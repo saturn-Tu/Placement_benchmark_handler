@@ -5,7 +5,9 @@
 #include <vector>
 #include <cassert>
 #include "../clipper/clipper.hpp"
-#include <set>
+#include <unordered_set>
+#include <utility>
+#include <boost/functional/hash.hpp>
 
 enum class NodeType : char {
   kBlock = 'B',
@@ -20,7 +22,8 @@ public:
   int x_, y_;
   NodeType type_;
   int partition_idx_ = -1;
-  std::set<int> nets_idx_;
+  std::unordered_set<int> nets_idx_;
+  std::unordered_set<std::pair<int, int>, boost::hash<std::pair<int, int>> > pins_position;
 //-------function-----------------
   Node();
   Node(std::string n, int w, int h, NodeType t): name_(n), w_(w), h_(h), type_(t){}
@@ -32,7 +35,7 @@ public:
   std::string name_;
   int id;
   // idx for terminal partition index
-  std::set<int> terminals_idx_;
+  std::unordered_set<int> terminals_idx_;
 };
 
 class Partition {
@@ -41,9 +44,9 @@ public:
   int id;
   int cell_num_;
   ClipperLib::IntPoint center_p;
-  std::set<int> cells_idx_;
-  std::set<int> inter_cells_;
-  std::set<int> inter_nets_idx_;
+  std::unordered_set<int> cells_idx_;
+  std::unordered_set<int> inter_cells_;
+  std::unordered_set<int> inter_nets_idx_;
   friend std::ostream& operator<<(std::ostream& os, const Partition& p);
 };
 

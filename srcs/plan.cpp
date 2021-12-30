@@ -269,31 +269,32 @@ void Plan::mapCellInPartition() {
       }
     }
     // map cell to partition
-    if(node.partition_idx_ != -1) {
-      Partition& partition = partitions_[node.partition_idx_];
-      partition.cell_num_++;
-      partition.cells_idx_.insert(node.id);
-    }
+    assert(node.partition_idx_ != -1);
+    Partition& partition = partitions_[node.partition_idx_];
+    partition.cell_num_++;
+    partition.cells_idx_.insert(node.id);
   }
 }
 
 void Plan::mapNetInPartition() {
-  int net_num = 0;
   for(int net_idx=0; net_idx<nets_.size(); net_idx++) {
     Net& net = nets_[net_idx];
-    set<int> partition_set;
+    unordered_set<int> partition_set;
     for(const int& t_idx:net.terminals_idx_) {
       Node& terminal = nodes_[t_idx];
+      assert(terminal.partition_idx_ != -1);
       partition_set.insert(terminal.partition_idx_);
     }
     // record inter_net
-    if(partition_set.count(-1) == 0 && partition_set.size() > 1) {
-      net_num += 1;
+    if(partition_set.size() > 1) {
+      inter_nets_.resize(inter_nets_.size()+1);
+      inter_nets_.back().id = inter_nets_.size()-1;
+      inter_nets_.back().terminals_idx_ = partition_set;
       for(const int& pa_idx:partition_set) {
-        Partition& partition = partitions_[pa_idx];
-        partition.inter_nets_idx_.insert(net_idx);
+        Partition& partition = partitions_.at(pa_idx);
+        partition.inter_nets_idx_.insert(inter_nets_.back().id);
       }
     }
   }
-  cout << "Net: " << net_num << " / " << nets_num_ << endl;
+  cout << "Net: " << inter_nets_.size() << " / " << nets_num_ << endl;
 }
