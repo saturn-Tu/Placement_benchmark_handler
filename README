@@ -18,10 +18,10 @@ macroName
 
 -----------------------------------------
 
-.net file for NCTUGR:
+.pa_net file for NCTUGR:
 "NumNets" : #Nets
 "NetDegree" :   #pinsInNet  netName
-  nodeId  // if nodeId is m%d_%d, first %d mean id of macro, second %d mean which pin in this macro
+  nodeId  // if nodeId is m%d_%d, first %d mean id of macro, second %d mean which pin in this macro, else is partitonId
   ...
 ...
 

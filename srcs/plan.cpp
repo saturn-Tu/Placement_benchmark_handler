@@ -360,3 +360,24 @@ void Plan::outputDesignFile(std::string design_file) {
   }
   fs.close();
 }
+
+void Plan::outputPaNetFile(std::string pa_net_file) {
+  cout << "# output .pa_net file\n";
+  fstream fs;
+  fs.open(pa_net_file, std::fstream::out);
+  assert(fs);
+  // output inter_net information
+  fs << "NumNets : " << inter_nets_.size() << endl;
+  for(Net& net:inter_nets_) {
+    fs << "NetDegree : " << net.terminals_idx_pin_.size() << " " << net.name_ << endl;
+    for(auto& terminal:net.terminals_idx_pin_) {
+      if(terminal.first >= partitions_.size()) { // terminal is macro pin
+        fs << "  m" << terminal.first << "_" << terminal.second;
+      } else {
+        fs << "  " << terminal.first << endl;
+      }
+    }
+  }
+  // output high-speed-net information
+  fs.close();
+}

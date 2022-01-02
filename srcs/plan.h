@@ -37,7 +37,7 @@ private:
   void readPartition(std::string partiton_file);
   void readNet(std::string net_file);
   void outputDesignFile(std::string design_file);
-  void outputMacros(std::string macro_file);
+  void outputPaNetFile(std::string pa_net_file);
 };
 
 #endif
