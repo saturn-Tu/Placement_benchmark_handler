@@ -5,9 +5,9 @@ void Plan::readAux(string aux_file) {
   cout << "# Reading .aux file\n";
   fstream fs;
   fs.open(aux_file, std::fstream::in);
-  string s1, s2, prefix_filename;
+  string s1, s2;
   bool node_flg = 0, pl_flg = 0, partition_flg = 0, net_flg = 0;
-  prefix_filename = aux_file.substr(0, aux_file.find("."));
+  prefix_filename_ = aux_file.substr(0, aux_file.find("."));
   // parse garbage
   fs >> s1 >> s2;
   while (fs >> s1) {
@@ -25,15 +25,15 @@ void Plan::readAux(string aux_file) {
   }
   fs.close();
   if(partition_flg) {
-    this->readPartition(prefix_filename+".partition");
+    this->readPartition(prefix_filename_+".partition");
     this->checkPartitionsRectilinear();
   }
   if(node_flg)
-    this->readNode(prefix_filename+".nodes");
+    this->readNode(prefix_filename_+".nodes");
   if(pl_flg)
-    this->readPl(prefix_filename+".pl");
+    this->readPl(prefix_filename_+".pl");
   if(net_flg) {
-    this->readNet(prefix_filename+".nets");
+    this->readNet(prefix_filename_+".nets");
   }
 }
 
@@ -60,9 +60,8 @@ void Plan::readNode(string node_file) {
   cout << node_num_ << " " << terminal_num_ << endl;
   getline(fs, s1);
   getline(fs, s1);
-  int macro_num = 0;
-  for(int n=0; n<node_num_; n++) {
-    Node& node = nodes_[n];
+  for(int node_idx=0; node_idx<node_num_; node_idx++) {
+    Node& node = nodes_[node_idx];
     getline(fs, s1);
     stringstream ss;
     ss << s1;
@@ -80,17 +79,17 @@ void Plan::readNode(string node_file) {
         if (s2 == "terminal") {
           // hard macro node id start from #partitions
           node.type_ = NodeType::kBlock;
-          node.id = macro_num + partition_num_;
-          macro_num++;
+          node.id_ = macroIdx2NodeIdx.size() + partition_num_;
+          macroIdx2NodeIdx.push_back(node_idx);
         } else {
           node.type_ = NodeType::kCore;
-          node.id = n;
+          node.id_ = node_idx;
         }
       }
       para_count++;
     }
     // recode node name mapping to index
-    this->node_idx_[node.name_] = n;
+    this->node_idx_[node.name_] = node_idx;
   }
   fs.close();
 }
@@ -128,7 +127,7 @@ void Plan::readPartition(string partition_file) {
   // parse garbage
   getline(fs, s1);
   for(int n=0; n<partition_num_; n++) {
-    partitions_[n].id = n;
+    partitions_[n].id_ = n;
     getline(fs, s1); 
     stringstream ss;
     ss << s1;
@@ -296,7 +295,7 @@ void Plan::mapCellInPartition() {
     assert(node.partition_idx_ != -1);
     Partition& partition = partitions_[node.partition_idx_];
     partition.cell_num_++;
-    partition.cells_idx_.insert(node.id);
+    partition.cells_idx_.insert(node.id_);
   }
 }
 
@@ -326,4 +325,27 @@ void Plan::mapNetInPartition() {
     }
   }
   cout << "Net: " << inter_nets_.size() << " / " << nets_num_ << endl;
+}
+
+void Plan::outputPAFile2NCTUGR() {
+  outputDesignFile(prefix_filename_+".design");
+}
+
+void Plan::outputDesignFile(std::string design_file) {
+  cout << "# output .design file\n";
+  fstream fs;
+  fs.open(design_file, std::fstream::out);
+  assert(fs);
+  // output partitions information
+  fs << partition_num_ << endl;
+  for(Partition& partition:partitions_) {
+    fs << partition.id_ << endl;
+    for(ClipperLib::IntPoint& point:partition.contour_) {
+      fs << point.X << " " << point.Y << " ";
+    }
+    fs << endl;
+    fs << "NumIntraCell" << partition.cell_num_ - partition.inter_cells_.size() << endl;
+  }
+  // output macros information
+  fs << macroIdx2NodeIdx.size() << endl;
 }

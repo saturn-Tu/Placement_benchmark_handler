@@ -67,6 +67,13 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "typeinfo": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "strstream": "cpp",
+        "any": "cpp",
+        "optional": "cpp",
+        "string_view": "cpp",
+        "rope": "cpp",
+        "slist": "cpp",
+        "*.ipp": "cpp"
     }
 }

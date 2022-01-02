@@ -13,8 +13,10 @@
 class Plan {
 public:
   int node_num_, terminal_num_, partition_num_, nets_num_, pins_num_;
+  std::string prefix_filename_;
   std::vector<Node> nodes_;
   std::unordered_map<std::string, int> node_idx_;
+  std::vector<int> macroIdx2NodeIdx;
   std::vector<Partition> partitions_;
   std::vector<Net> nets_;
   std::vector<Net> inter_nets_;
@@ -27,12 +29,15 @@ public:
   void checkPartitionsRectilinear();
   void mapCellInPartition();
   void mapNetInPartition();
+  void outputPAFile2NCTUGR();
 
 private:
   void readPl(std::string pl_file);
   void readNode(std::string node_file);
   void readPartition(std::string partiton_file);
   void readNet(std::string net_file);
+  void outputDesignFile(std::string design_file);
+  void outputMacros(std::string macro_file);
 };
 
 #endif

@@ -1,10 +1,18 @@
-.partition file for NCTUGR:
-#Partition
-partitionName
+Ignore .node .pl file
+--------------------------------
+
+.design file for NCTUGR:
+#Partitions
+partitionId
+  #points
   x y x y ... //boundary of partition
   "NumIntraCell"  #NumIntraCell
-  "NumInterCell"  #NumInterCell
-    cellName
+...
+#Macros
+macroName
+  lx ly w h
+  #pins
+    offset_x offset_y
     ...
 ...
 
@@ -13,13 +21,13 @@ partitionName
 .net file for NCTUGR:
 "NumNets" : #Nets
 "NetDegree" :   #pinsInNet  netName
-  cellName
+  nodeId  // if nodeId is m%d_%d, first %d mean id of macro, second %d mean which pin in this macro
   ...
 ...
 
 "NumHighSpeedNets" :  #HighSpeedNets
 "NetDegree" :   #pinsInNet  netName
-  cellName
+  nodeId
   ...
 ...
 

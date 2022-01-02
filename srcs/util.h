@@ -18,7 +18,7 @@ enum class NodeType : char {
 class Node {
 public:
   std::string name_;
-  int id;
+  int id_;
   int w_, h_;
   int x_, y_;
   NodeType type_;
@@ -43,7 +43,7 @@ public:
 class Partition {
 public:
   ClipperLib::Path contour_;
-  int id;
+  int id_;
   int cell_num_;
   ClipperLib::IntPoint center_p;
   std::unordered_set<int> cells_idx_;
