@@ -16,7 +16,7 @@ public:
   std::string prefix_filename_;
   std::vector<Node> nodes_;
   std::unordered_map<std::string, int> node_idx_;
-  std::vector<int> macroIdx2NodeIdx;
+  std::vector<int> macro_idx_2_node_idx_;
   std::vector<Partition> partitions_;
   std::vector<Net> nets_;
   std::vector<Net> inter_nets_;

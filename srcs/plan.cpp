@@ -79,8 +79,8 @@ void Plan::readNode(string node_file) {
         if (s2 == "terminal") {
           // hard macro node id start from #partitions
           node.type_ = NodeType::kBlock;
-          node.id_ = macroIdx2NodeIdx.size() + partition_num_;
-          macroIdx2NodeIdx.push_back(node_idx);
+          node.id_ = macro_idx_2_node_idx_.size() + partition_num_;
+          macro_idx_2_node_idx_.push_back(node_idx);
         } else {
           node.type_ = NodeType::kCore;
           node.id_ = node_idx;
@@ -340,12 +340,23 @@ void Plan::outputDesignFile(std::string design_file) {
   fs << partition_num_ << endl;
   for(Partition& partition:partitions_) {
     fs << partition.id_ << endl;
+    fs << "  " << partition.contour_.size() << "\n  ";
     for(ClipperLib::IntPoint& point:partition.contour_) {
       fs << point.X << " " << point.Y << " ";
     }
     fs << endl;
-    fs << "NumIntraCell" << partition.cell_num_ - partition.inter_cells_.size() << endl;
+    fs << "  NumIntraCell" << partition.cell_num_ - partition.inter_cells_.size() << endl;
   }
   // output macros information
-  fs << macroIdx2NodeIdx.size() << endl;
+  fs << macro_idx_2_node_idx_.size() << endl;
+  for(const int& idx:macro_idx_2_node_idx_) {
+    Node& macro = nodes_.at(idx);
+    fs << macro.name_ << endl;
+    fs << "  " << macro.x_ << " " << macro.y_ << " " << macro.w_ << " " << macro.h_ << endl;
+    fs << "  " << macro.pins_position_to_id_map.size() << endl;
+    for(auto& pins_position:macro.pins_position_to_id_map) {
+      fs << "    " << pins_position.first.first << " " << pins_position.first.second << endl;
+    }
+  }
+  fs.close();
 }
