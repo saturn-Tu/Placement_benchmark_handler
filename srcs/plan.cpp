@@ -24,14 +24,14 @@ void Plan::readAux(string aux_file) {
     }
   }
   fs.close();
-  if(node_flg)
-    this->readNode(prefix_filename+".nodes");
-  if(pl_flg)
-    this->readPl(prefix_filename+".pl");
   if(partition_flg) {
     this->readPartition(prefix_filename+".partition");
     this->checkPartitionsRectilinear();
   }
+  if(node_flg)
+    this->readNode(prefix_filename+".nodes");
+  if(pl_flg)
+    this->readPl(prefix_filename+".pl");
   if(net_flg) {
     this->readNet(prefix_filename+".nets");
   }
@@ -60,6 +60,7 @@ void Plan::readNode(string node_file) {
   cout << node_num_ << " " << terminal_num_ << endl;
   getline(fs, s1);
   getline(fs, s1);
+  int macro_num = 0;
   for(int n=0; n<node_num_; n++) {
     Node& node = nodes_[n];
     getline(fs, s1);
@@ -69,14 +70,23 @@ void Plan::readNode(string node_file) {
     while(ss >> s2) {
       if (para_count == 0) {
         node.name_ = s2;
-        node.id = n;
       }
       else if (para_count == 1)
         node.w_ = stoi(s2);
       else if (para_count == 2)
         node.h_ = stoi(s2);
-      else if (para_count == 3) 
-        node.type_ = (s2 == "terminal") ? NodeType::kBlock : NodeType::kCore;
+      else if (para_count == 3) {
+        // record macro id separately
+        if (s2 == "terminal") {
+          // hard macro node id start from #partitions
+          node.type_ = NodeType::kBlock;
+          node.id = macro_num + partition_num_;
+          macro_num++;
+        } else {
+          node.type_ = NodeType::kCore;
+          node.id = n;
+        }
+      }
       para_count++;
     }
     // recode node name mapping to index
@@ -167,8 +177,22 @@ void Plan::readNet(std::string net_file) {
       ss << s1;
       ss >> s1 >> s2 >> s3 >> s4 >> s5;
       int cell_idx = stoi(s1.substr(1, s1.size()-1));
-      net.terminals_idx_.insert(cell_idx);
-      nodes_[cell_idx].nets_idx_.insert(n);
+      Node& node = nodes_[cell_idx];
+      int pin_id = 0;
+      if(node.type_ == NodeType::kBlock) {
+        int x_offset = stof(s4)+0.5;
+        int y_offset = stof(s5)+0.5;
+        auto pin_map = node.pins_position_to_id_map;
+        auto itr = pin_map.find({x_offset,y_offset});
+        if(itr == pin_map.end()) {
+          pin_id = pin_map.size();
+          pin_map.insert({{x_offset, y_offset}, pin_id});
+        } else {
+          pin_id = itr->second;
+        }
+      }
+      net.terminals_idx_pin_.insert({cell_idx, pin_id});
+      node.nets_idx_.insert(net.id);
     }
   }
   fs.close();
@@ -279,20 +303,25 @@ void Plan::mapCellInPartition() {
 void Plan::mapNetInPartition() {
   for(int net_idx=0; net_idx<nets_.size(); net_idx++) {
     Net& net = nets_[net_idx];
-    unordered_set<int> partition_set;
-    for(const int& t_idx:net.terminals_idx_) {
-      Node& terminal = nodes_[t_idx];
-      assert(terminal.partition_idx_ != -1);
-      partition_set.insert(terminal.partition_idx_);
+    // element: partition_id, pin_id
+    unordered_set<pair<int, int>, boost::hash<pair<int,int>>> partition_pin_set;
+    for(const pair<int,int>& node_pin:net.terminals_idx_pin_) {
+      const int& t_idx = node_pin.first;
+      const int& pin_id = node_pin.second;
+      const int& partition_idx = nodes_[t_idx].partition_idx_;
+      partition_pin_set.insert({partition_idx, pin_id});
     }
     // record inter_net
-    if(partition_set.size() > 1) {
+    if(partition_pin_set.size() > 1) {
       inter_nets_.resize(inter_nets_.size()+1);
       inter_nets_.back().id = inter_nets_.size()-1;
-      inter_nets_.back().terminals_idx_ = partition_set;
-      for(const int& pa_idx:partition_set) {
-        Partition& partition = partitions_.at(pa_idx);
-        partition.inter_nets_idx_.insert(inter_nets_.back().id);
+      inter_nets_.back().terminals_idx_pin_ = partition_pin_set;
+      for(const pair<int,int>& partition_pin:partition_pin_set) {
+        const int& pa_idx = partition_pin.first;
+        if(pa_idx < partition_num_ && pa_idx >= 0) { // this node are partition
+          Partition& partition = partitions_.at(pa_idx);
+          partition.inter_nets_idx_.insert(inter_nets_.back().id);
+        }
       }
     }
   }

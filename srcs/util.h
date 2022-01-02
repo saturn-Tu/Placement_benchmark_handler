@@ -6,6 +6,7 @@
 #include <cassert>
 #include "../clipper/clipper.hpp"
 #include <unordered_set>
+#include <unordered_map>
 #include <utility>
 #include <boost/functional/hash.hpp>
 
@@ -23,7 +24,8 @@ public:
   NodeType type_;
   int partition_idx_ = -1;
   std::unordered_set<int> nets_idx_;
-  std::unordered_set<std::pair<int, int>, boost::hash<std::pair<int, int>> > pins_position;
+  // record x_offset, y_offset is which pin id
+  std::unordered_map<std::pair<int,int>, int, boost::hash<std::pair<int,int>> > pins_position_to_id_map;
 //-------function-----------------
   Node();
   Node(std::string n, int w, int h, NodeType t): name_(n), w_(w), h_(h), type_(t){}
@@ -34,8 +36,8 @@ class Net {
 public:
   std::string name_;
   int id;
-  // idx for terminal partition index
-  std::unordered_set<int> terminals_idx_;
+  // record which node idx and pin id
+  std::unordered_set<std::pair<int, int>, boost::hash<std::pair<int,int>>> terminals_idx_pin_;
 };
 
 class Partition {
