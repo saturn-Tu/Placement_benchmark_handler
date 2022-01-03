@@ -57,7 +57,6 @@ void Plan::readNode(string node_file) {
     else if (s1 == "NumTerminals")
       terminal_num_ = stoi(s3);
   }
-  cout << node_num_ << " " << terminal_num_ << endl;
   getline(fs, s1);
   getline(fs, s1);
   for(int node_idx=0; node_idx<node_num_; node_idx++) {
@@ -181,7 +180,7 @@ void Plan::readNet(std::string net_file) {
       if(node.type_ == NodeType::kBlock) {
         int x_offset = stof(s4)+0.5;
         int y_offset = stof(s5)+0.5;
-        auto pin_map = node.pins_position_to_id_map;
+        auto& pin_map = node.pins_position_to_id_map;
         auto itr = pin_map.find({x_offset,y_offset});
         if(itr == pin_map.end()) {
           pin_id = pin_map.size();
@@ -306,9 +305,13 @@ void Plan::mapNetInPartition() {
     unordered_set<pair<int, int>, boost::hash<pair<int,int>>> partition_pin_set;
     for(const pair<int,int>& node_pin:net.terminals_idx_pin_) {
       const int& t_idx = node_pin.first;
-      const int& pin_id = node_pin.second;
-      const int& partition_idx = nodes_[t_idx].partition_idx_;
-      partition_pin_set.insert({partition_idx, pin_id});
+      if(nodes_[t_idx].type_ == NodeType::kBlock) {
+        const int& pin_id = node_pin.second;
+        partition_pin_set.insert({nodes_[t_idx].id_, pin_id});
+      } else {
+        const int& partition_idx = nodes_[t_idx].partition_idx_;
+        partition_pin_set.insert({partition_idx, 0});
+      }
     }
     // record inter_net
     if(partition_pin_set.size() > 1) {
@@ -329,6 +332,7 @@ void Plan::mapNetInPartition() {
 
 void Plan::outputPAFile2NCTUGR() {
   outputDesignFile(prefix_filename_+".design");
+  outputPaNetFile(prefix_filename_+".pa_net");
 }
 
 void Plan::outputDesignFile(std::string design_file) {
@@ -345,7 +349,7 @@ void Plan::outputDesignFile(std::string design_file) {
       fs << point.X << " " << point.Y << " ";
     }
     fs << endl;
-    fs << "  NumIntraCell" << partition.cell_num_ - partition.inter_cells_.size() << endl;
+    fs << "  NumIntraCell " << partition.cell_num_ - partition.inter_cells_.size() << endl;
   }
   // output macros information
   fs << macro_idx_2_node_idx_.size() << endl;
@@ -372,7 +376,7 @@ void Plan::outputPaNetFile(std::string pa_net_file) {
     fs << "NetDegree : " << net.terminals_idx_pin_.size() << " " << net.name_ << endl;
     for(auto& terminal:net.terminals_idx_pin_) {
       if(terminal.first >= partitions_.size()) { // terminal is macro pin
-        fs << "  m" << terminal.first << "_" << terminal.second;
+        fs << "  m" << terminal.first << "_" << terminal.second << endl;
       } else {
         fs << "  " << terminal.first << endl;
       }

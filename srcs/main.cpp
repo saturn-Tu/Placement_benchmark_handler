@@ -9,8 +9,9 @@ int main(int argc, char** argv){
   plan.outputGDT("output.gdt");
   int inter_cell_num = 0;
   for(auto& p:plan.partitions_) {
-    std::cout << p << std::endl;
     inter_cell_num += p.cell_num_;
   }
-  std::cout << "cell: " << inter_cell_num << " / " << plan.nodes_.size() << std::endl;
+  std::cout << "cell: " << inter_cell_num << " / " << plan.macro_idx_2_node_idx_.size() << " / " << plan.nodes_.size() << std::endl;
+  std::cout << "net: " << plan.inter_nets_.size() << " / " << plan.nets_.size() << std::endl;
+  plan.outputPAFile2NCTUGR();
 }
