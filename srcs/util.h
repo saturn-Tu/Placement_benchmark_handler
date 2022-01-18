@@ -45,7 +45,7 @@ public:
   ClipperLib::Path contour_;
   int id_;
   int cell_num_;
-  ClipperLib::IntPoint center_p;
+  ClipperLib::IntPoint center_p_;
   std::unordered_set<int> cells_idx_;
   std::unordered_set<int> inter_cells_;
   std::unordered_set<int> inter_nets_idx_;
