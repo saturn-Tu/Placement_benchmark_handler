@@ -133,11 +133,11 @@ void Plan::readPartition(string partition_file) {
     while(ss >> s1 >> s2) {
       ClipperLib::IntPoint point(stoi(s1), stoi(s2));
       partitions_[n].contour_ << ClipperLib::IntPoint(point);
-      partitions_[n].center_p.X += point.X;
-      partitions_[n].center_p.Y += point.Y;
+      partitions_[n].center_p_.X += point.X;
+      partitions_[n].center_p_.Y += point.Y;
     }
-    partitions_[n].center_p.X /= partitions_[n].contour_.size();
-    partitions_[n].center_p.Y /= partitions_[n].contour_.size();
+    partitions_[n].center_p_.X /= partitions_[n].contour_.size();
+    partitions_[n].center_p_.Y /= partitions_[n].contour_.size();
   }
 }
 
@@ -283,7 +283,7 @@ void Plan::mapCellInPartition() {
         break;
       } else {
         // find nearest partition by calculating distance to center of partition
-        int distance = abs(mid_p.X-partition.center_p.X) + abs(mid_p.Y-partition.center_p.Y);
+        int distance = abs(mid_p.X-partition.center_p_.X) + abs(mid_p.Y-partition.center_p_.Y);
         if(distance < min_distance) {
           min_distance = distance;
           node.partition_idx_ = pa_idx;
