@@ -46,8 +46,8 @@ public:
   int id_;
   int cell_num_;
   ClipperLib::IntPoint center_p_;
+  int inter_cell_num_;
   std::unordered_set<int> cells_idx_;
-  std::unordered_set<int> inter_cells_;
   std::unordered_set<int> inter_nets_idx_;
   friend std::ostream& operator<<(std::ostream& os, const Partition& p);
 };

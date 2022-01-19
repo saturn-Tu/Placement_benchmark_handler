@@ -271,6 +271,7 @@ void Plan::checkPartitionsRectilinear() {
 }
 
 void Plan::mapCellInPartition() {
+  cout << "Maping cell into partition" << endl;
   for(Node& node:nodes_) {
     if(node.type_ == NodeType::kBlock)
       continue;
@@ -299,6 +300,7 @@ void Plan::mapCellInPartition() {
 }
 
 void Plan::mapNetInPartition() {
+  cout << "Maping net into partition" << endl;
   for(int net_idx=0; net_idx<nets_.size(); net_idx++) {
     Net& net = nets_[net_idx];
     // element: partition_id, pin_id
@@ -308,7 +310,7 @@ void Plan::mapNetInPartition() {
       if(nodes_[t_idx].type_ == NodeType::kBlock) {
         const int& pin_id = node_pin.second;
         partition_pin_set.insert({nodes_[t_idx].id_, pin_id});
-      } else {
+      } else if(nodes_[t_idx].type_ == NodeType::kCore) {
         const int& partition_idx = nodes_[t_idx].partition_idx_;
         partition_pin_set.insert({partition_idx, 0});
       }
@@ -323,6 +325,7 @@ void Plan::mapNetInPartition() {
         if(pa_idx < partition_num_ && pa_idx >= 0) { // this node are partition
           Partition& partition = partitions_.at(pa_idx);
           partition.inter_nets_idx_.insert(inter_nets_.back().id);
+          partition.inter_cell_num_++;
         }
       }
     }
@@ -349,7 +352,8 @@ void Plan::outputDesignFile(std::string design_file) {
       fs << point.X << " " << point.Y << " ";
     }
     fs << endl;
-    fs << "  NumIntraCell " << partition.cell_num_ - partition.inter_cells_.size() << endl;
+    fs << partition.inter_nets_idx_.size() << endl;
+    fs << "  NumIntraCell " << partition.cell_num_ - partition.inter_cell_num_ << endl;
   }
   // output macros information
   fs << macro_idx_2_node_idx_.size() << endl;
@@ -372,13 +376,15 @@ void Plan::outputPaNetFile(std::string pa_net_file) {
   assert(fs);
   // output inter_net information
   fs << "NumNets : " << inter_nets_.size() << endl;
+  vector<int> partition_pin_count(partitions_.size(), 0);
   for(Net& net:inter_nets_) {
     fs << "NetDegree : " << net.terminals_idx_pin_.size() << " " << net.name_ << endl;
     for(auto& terminal:net.terminals_idx_pin_) {
       if(terminal.first >= partitions_.size()) { // terminal is macro pin
         fs << "  m" << terminal.first << "_" << terminal.second << endl;
       } else {
-        fs << "  " << terminal.first << endl;
+        fs << "  " << terminal.first << "_" << partition_pin_count.at(terminal.first) << endl;
+        partition_pin_count.at(terminal.first)++;
       }
     }
   }

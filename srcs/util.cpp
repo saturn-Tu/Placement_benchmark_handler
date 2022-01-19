@@ -15,7 +15,7 @@ ostream& operator<< (ostream& os, const Partition& p) {
   os << "partition id: " << p.id_ << endl;
   os << "center_p: " << p.center_p_ << endl;
   os << p.contour_;
-  os << "cell_num: " << p.cell_num_ << " inter_cell_num: " << p.inter_cells_.size() << 
+  os << "cell_num: " << p.cell_num_ << " inter_cell_num: " << p.inter_cell_num_ << 
     " inter_net_num = " << p.inter_nets_idx_.size() << endl;
   return os;
 }
