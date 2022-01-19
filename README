@@ -6,6 +6,7 @@ Ignore .node .pl file
 partitionId
   #points
   x y x y ... //boundary of partition
+  #pins
   "NumIntraCell"  #NumIntraCell
 ...
 #Macros
@@ -16,12 +17,14 @@ macroName
     ...
 ...
 
+// macro id is follow by partition
+
 -----------------------------------------
 
 .pa_net file for NCTUGR:
 "NumNets" : #Nets
 "NetDegree" :   #pinsInNet  netName
-  nodeId  // if nodeId is m%d_%d, first %d mean id of macro, second %d mean which pin in this macro, else is partitonId
+  %d_%d  // first %d mean id of macro/partition, second %d mean which pin. macro start with m%d_%d.
   ...
 ...
 
