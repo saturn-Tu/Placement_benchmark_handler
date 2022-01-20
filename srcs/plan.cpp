@@ -167,7 +167,7 @@ void Plan::readNet(std::string net_file) {
     ss >> s1 >> s2 >> s3 >> s4;
     int pin_num = stoi(s3);
     net.name_ = s4;
-    net.id = n;
+    net.id_ = n;
     // parse pin information
     for(int p=0; p<pin_num; p++) {
       getline(fs, s1);
@@ -190,7 +190,7 @@ void Plan::readNet(std::string net_file) {
         }
       }
       net.terminals_idx_pin_.insert({cell_idx, pin_id});
-      node.nets_idx_.insert(net.id);
+      node.nets_idx_.insert(net.id_);
     }
   }
   fs.close();
@@ -318,13 +318,13 @@ void Plan::mapNetInPartition() {
     // record inter_net
     if(partition_pin_set.size() > 1) {
       inter_nets_.resize(inter_nets_.size()+1);
-      inter_nets_.back().id = inter_nets_.size()-1;
+      inter_nets_.back().id_ = inter_nets_.size()-1;
       inter_nets_.back().terminals_idx_pin_ = partition_pin_set;
       for(const pair<int,int>& partition_pin:partition_pin_set) {
         const int& pa_idx = partition_pin.first;
         if(pa_idx < partition_num_ && pa_idx >= 0) { // this node are partition
           Partition& partition = partitions_.at(pa_idx);
-          partition.inter_nets_idx_.insert(inter_nets_.back().id);
+          partition.inter_nets_idx_.insert(inter_nets_.back().id_);
           partition.inter_cell_num_++;
         }
       }
@@ -378,7 +378,7 @@ void Plan::outputPaNetFile(std::string pa_net_file) {
   fs << inter_nets_.size() << endl;
   vector<int> partition_pin_count(partitions_.size(), 0);
   for(Net& net:inter_nets_) {
-    fs << net.name_ << " " << net.terminals_idx_pin_.size() << endl;
+    fs << "Net"+to_string(net.id_) << " " << net.terminals_idx_pin_.size() << endl;
     for(auto& terminal:net.terminals_idx_pin_) {
       if(terminal.first >= partitions_.size()) { // terminal is macro pin
         fs << "  " << terminal.first << " " << terminal.second << endl;

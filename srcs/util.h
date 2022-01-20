@@ -35,7 +35,7 @@ public:
 class Net {
 public:
   std::string name_;
-  int id;
+  int id_;
   // record which node idx and pin id
   std::unordered_set<std::pair<int, int>, boost::hash<std::pair<int,int>>> terminals_idx_pin_;
 };
