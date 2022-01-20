@@ -10,7 +10,7 @@ partitionId
   "NumIntraCell"  #NumIntraCell
 ...
 #Macros
-macroName
+macroId
   lx ly w h
   #pins
     offset_x offset_y
@@ -24,7 +24,7 @@ macroName
 .pa_net file for NCTUGR:
 "NumNets" : #Nets
 "NetDegree" :   #pinsInNet  netName
-  %d_%d  // first %d mean id of macro/partition, second %d mean which pin. macro start with m%d_%d.
+  %d %d  // first %d mean id of macro/partition, second %d mean which pin.
   ...
 ...
 

@@ -381,9 +381,9 @@ void Plan::outputPaNetFile(std::string pa_net_file) {
     fs << "NetDegree : " << net.terminals_idx_pin_.size() << " " << net.name_ << endl;
     for(auto& terminal:net.terminals_idx_pin_) {
       if(terminal.first >= partitions_.size()) { // terminal is macro pin
-        fs << "  m" << terminal.first << "_" << terminal.second << endl;
+        fs << "  " << terminal.first << " " << terminal.second << endl;
       } else {
-        fs << "  " << terminal.first << "_" << partition_pin_count.at(terminal.first) << endl;
+        fs << "  " << terminal.first << " " << partition_pin_count.at(terminal.first) << endl;
         partition_pin_count.at(terminal.first)++;
       }
     }
