@@ -375,10 +375,10 @@ void Plan::outputPaNetFile(std::string pa_net_file) {
   fs.open(pa_net_file, std::fstream::out);
   assert(fs);
   // output inter_net information
-  fs << "NumNets : " << inter_nets_.size() << endl;
+  fs << inter_nets_.size() << endl;
   vector<int> partition_pin_count(partitions_.size(), 0);
   for(Net& net:inter_nets_) {
-    fs << "NetDegree : " << net.terminals_idx_pin_.size() << " " << net.name_ << endl;
+    fs << net.name_ << " " << net.terminals_idx_pin_.size() << endl;
     for(auto& terminal:net.terminals_idx_pin_) {
       if(terminal.first >= partitions_.size()) { // terminal is macro pin
         fs << "  " << terminal.first << " " << terminal.second << endl;

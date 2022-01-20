@@ -22,14 +22,14 @@ macroId
 -----------------------------------------
 
 .pa_net file for NCTUGR:
-"NumNets" : #Nets
-"NetDegree" :   #pinsInNet  netName
+#Nets
+netName #pinsInNet
   %d %d  // first %d mean id of macro/partition, second %d mean which pin.
   ...
 ...
 
-"NumHighSpeedNets" :  #HighSpeedNets
-"NetDegree" :   #pinsInNet  netName
+#HighSpeedNets
+netName #pinsInNet
   nodeId
   ...
 ...
