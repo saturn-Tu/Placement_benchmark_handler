@@ -295,6 +295,7 @@ void Plan::mapCellInPartition() {
     assert(node.partition_idx_ != -1);
     Partition& partition = partitions_[node.partition_idx_];
     partition.cell_num_++;
+    partition.cell_area_ += node.w_*node.h_;
     partition.cells_idx_.insert(node.id_);
   }
 }

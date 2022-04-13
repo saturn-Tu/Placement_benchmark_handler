@@ -44,7 +44,7 @@ class Partition {
 public:
   ClipperLib::Path contour_;
   int id_;
-  int cell_num_;
+  int cell_num_ = 0, cell_area_ = 0;
   ClipperLib::IntPoint center_p_;
   int inter_cell_num_;
   std::unordered_set<int> cells_idx_;
