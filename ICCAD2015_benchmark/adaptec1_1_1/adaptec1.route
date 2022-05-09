@@ -1,0 +1,20 @@
+route 1.0
+# Created : 
+# User : 
+
+Grid                       :    360    290    9
+VerticalCapacity           :    0    40    0    40    0    44    0    48    0    
+HorizontalCapacity         :    0    0    40    0    44    0    44    0    48    
+MinWireWidth               :    1    1    1    1    2    2    2    4    4    
+MinWireSpacing             :    1    1    1    1    2    2    2    4    4    
+ViaSpacing                 :    0    0    0    0    0    0    0    0    0    
+GridOrigin                 :    0    0
+TileSize                   :    32    40
+BlockagePorosity           :    0
+
+NumNiTerminals  :  0
+
+NumBlockageNodes  :  0
+
+NumEdgeCapacityAdjustments  :  0
+

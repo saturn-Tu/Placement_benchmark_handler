@@ -1,0 +1,1 @@
+shrink partition boundary which is it align on grid line
